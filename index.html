@@ -1,84 +1,97 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <title>Sipario 3D</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Landing Page Tende 3D</title>
   <style>
-    body { margin: 0; overflow: hidden; }
-    canvas { display: block; }
+    body, html {
+      margin: 0; padding: 0; overflow: hidden; background: #111; height: 100vh;
+    }
+    #container {
+      width: 100vw; height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
-    <h1>Test: la pagina funziona!</h1>
-<script type="module">
-  import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.module.js';
-  import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.152.2/examples/jsm/loaders/GLTFLoader.js';
-  import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.152.2/examples/jsm/controls/OrbitControls.js';
+  <div id="container"></div>
 
-  const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x000000);
+  <!-- Three.js -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
+  <!-- GLTFLoader -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/loaders/GLTFLoader.js"></script>
+  <!-- GSAP per animazioni -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
 
-  const camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 1000);
-  camera.position.set(0, 1.5, 4);
+  <script>
+    const container = document.getElementById('container');
 
-  const renderer = new THREE.WebGLRenderer({ antialias: true });
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  document.body.appendChild(renderer.domElement);
+    const scene = new THREE.Scene();
 
-  // Luci
-  const light = new THREE.DirectionalLight(0xffffff, 1);
-  light.position.set(5, 5, 5);
-  scene.add(light);
+    const camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 0.1, 1000);
+    camera.position.z = 5;
 
-  const ambient = new THREE.AmbientLight(0x404040); // luce diffusa
-  scene.add(ambient);
+    const renderer = new THREE.WebGLRenderer({antialias: true, alpha:true});
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    container.appendChild(renderer.domElement);
 
-  // Controlli camera (mouse)
-  const controls = new OrbitControls(camera, renderer.domElement);
+    const light = new THREE.DirectionalLight(0xffffff, 1);
+    light.position.set(5,10,7);
+    scene.add(light);
+    scene.add(new THREE.AmbientLight(0x404040));
 
-  // Carica il modello .glb
-  const loader = new GLTFLoader();
-  loader.load('./models/sipario.glb', function (gltf) {
-    const model = gltf.scene;
-    scene.add(model);
+    const loader = new THREE.GLTFLoader();
 
-    // Se il tuo modello ha animazioni
-    if (gltf.animations.length > 0) {
-      const mixer = new THREE.AnimationMixer(model);
-      gltf.animations.forEach((clip) => {
-        mixer.clipAction(clip).play();
-      });
+    let tendaSinistra, tendaDestra;
 
-      // Animazione loop
-      const clock = new THREE.Clock();
-      function animate() {
-        requestAnimationFrame(animate);
-        const delta = clock.getDelta();
-        mixer.update(delta);
-        renderer.render(scene, camera);
+    loader.load('models/tenda-sinistra.glb', gltf => {
+      tendaSinistra = gltf.scene;
+      tendaSinistra.position.x = -1.5;
+      scene.add(tendaSinistra);
+    });
+
+    loader.load('models/tenda-destra.glb', gltf => {
+      tendaDestra = gltf.scene;
+      tendaDestra.position.x = 1.5;
+      scene.add(tendaDestra);
+    });
+
+    let aperto = false;
+
+    function apriTende() {
+      if(!aperto) {
+        aperto = true;
+        gsap.to(tendaSinistra.rotation, { y: Math.PI / 4, duration: 1 });
+        gsap.to(tendaDestra.rotation, { y: -Math.PI / 4, duration: 1 });
       }
-      animate();
-    } else {
-      // Nessuna animazione: render normale
-      animate();
     }
+
+    function chiudiTende() {
+      if(aperto) {
+        aperto = false;
+        gsap.to(tendaSinistra.rotation, { y: 0, duration: 1 });
+        gsap.to(tendaDestra.rotation, { y: 0, duration: 1 });
+      }
+    }
+
+    container.addEventListener('mouseenter', apriTende);
+    container.addEventListener('mouseleave', chiudiTende);
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth/window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
 
     function animate() {
       requestAnimationFrame(animate);
       renderer.render(scene, camera);
     }
-
-  }, undefined, function (error) {
-    console.error('Errore nel caricamento:', error);
-  });
-
-  // Adatta la scena al ridimensionamento finestra
-  window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth/window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-  });
-</script>
-
+    animate();
+  </script>
 </body>
 </html>
