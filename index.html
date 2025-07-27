@@ -49,14 +49,14 @@
     let tendaSinistra, tendaDestra;
 
     loader.load('models/tenda-sinistra.glb', gltf => {
-      tendaSinistra = gltf.scene;
-      tendaSinistra.position.x = -1.5;
+      tenda-sinistra = gltf.scene;
+      tenda-sinistra.position.x = -1.5;
       scene.add(tendaSinistra);
     });
 
     loader.load('models/tenda-destra.glb', gltf => {
-      tendaDestra = gltf.scene;
-      tendaDestra.position.x = 1.5;
+      tenda-destra = gltf.scene;
+      tenda-destra.position.x = 1.5;
       scene.add(tendaDestra);
     });
 
