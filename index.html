@@ -46,7 +46,7 @@
 
     const loader = new THREE.GLTFLoader();
 
-    let tendaSinistra, tendaDestra;
+    let tenda-sinistra, tenda-destra;
 
     loader.load('models/tenda-sinistra.glb', gltf => {
       tenda-sinistra = gltf.scene;
@@ -65,16 +65,16 @@
     function apriTende() {
       if(!aperto) {
         aperto = true;
-        gsap.to(tendaSinistra.rotation, { y: Math.PI / 4, duration: 1 });
-        gsap.to(tendaDestra.rotation, { y: -Math.PI / 4, duration: 1 });
+        gsap.to(tenda-sinistra.rotation, { y: Math.PI / 4, duration: 1 });
+        gsap.to(tenda-destra.rotation, { y: -Math.PI / 4, duration: 1 });
       }
     }
 
     function chiudiTende() {
       if(aperto) {
         aperto = false;
-        gsap.to(tendaSinistra.rotation, { y: 0, duration: 1 });
-        gsap.to(tendaDestra.rotation, { y: 0, duration: 1 });
+        gsap.to(tenda-sinistra.rotation, { y: 0, duration: 1 });
+        gsap.to(tenda-destra.rotation, { y: 0, duration: 1 });
       }
     }
 
