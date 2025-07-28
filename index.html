@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Landing Page simona salerno</title>
+  <title>Landing Page Tende 3D</title>
   <style>
     body, html {
-      margin: 0; padding: 0; overflow: hidden; background: #111; height: 100vh;
+      margin: 0; padding: 0; overflow: hidden; background: #ffffff; height: 100vh;
     }
     #container {
       width: 100vw; height: 100vh;
@@ -33,48 +33,50 @@
     const scene = new THREE.Scene();
 
     const camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 0.1, 1000);
-    camera.position.z += 5;
+    camera.position.z = 5;
 
-    const renderer = new THREE.WebGLRenderer({antialias: true, alpha:true});
+    const renderer = new THREE.WebGLRenderer({antialias: true, alpha: true});
     renderer.setSize(window.innerWidth, window.innerHeight);
     container.appendChild(renderer.domElement);
 
+    // Luci
     const light = new THREE.DirectionalLight(0xffffff, 1);
     light.position.set(5,10,7);
     scene.add(light);
     scene.add(new THREE.AmbientLight(0x404040));
 
+    // Loader modelli
     const loader = new THREE.GLTFLoader();
 
-    let tenda-sinistra, tenda-destra;
+    let tenda_sinistra, tenda_destra;
 
     loader.load('models/tenda-sinistra.glb', gltf => {
-      tenda-sinistra = gltf.scene;
-      tenda-sinistra.position.x = -1.5;
-      scene.add(tendaSinistra);
+      tenda_sinistra = gltf.scene;
+      tenda_sinistra.position.x = -1.5;
+      scene.add(tenda_sinistra);
     });
 
     loader.load('models/tenda-destra.glb', gltf => {
-      tenda-destra = gltf.scene;
-      tenda-destra.position.x = 1.5;
-      scene.add(tendaDestra);
+      tenda_destra = gltf.scene;
+      tenda_destra.position.x = 1.5;
+      scene.add(tenda_destra);
     });
 
     let aperto = false;
 
     function apriTende() {
-      if(!aperto) {
+      if (!aperto && tenda_sinistra && tenda_destra) {
         aperto = true;
-        gsap.to(tenda-sinistra.rotation, { y: Math.PI / 4, duration: 1 });
-        gsap.to(tenda-destra.rotation, { y: -Math.PI / 4, duration: 1 });
+        gsap.to(tenda_sinistra.rotation, { y: Math.PI / 4, duration: 1 });
+        gsap.to(tenda_destra.rotation, { y: -Math.PI / 4, duration: 1 });
       }
     }
 
     function chiudiTende() {
-      if(aperto) {
+      if (aperto && tenda_sinistra && tenda_destra) {
         aperto = false;
-        gsap.to(tenda-sinistra.rotation, { y: 0, duration: 1 });
-        gsap.to(tenda-destra.rotation, { y: 0, duration: 1 });
+        gsap.to(tenda_sinistra.rotation, { y: 0, duration: 1 });
+        gsap.to(tenda_destra.rotation, { y: 0, duration: 1 });
       }
     }
 
@@ -96,4 +98,3 @@
 </body>
 </html>
 
-Fix camera position error
